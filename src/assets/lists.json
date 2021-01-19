@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "To Do",
+        "tasks": [{
+            "taskname": "Pay Electricity Bill"
+        },
+        {
+            "taskname": "Make Grocery List"
+        },
+        {
+            "taskname": "new"
+        }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "In Progress",
+        "tasks": [{
+            "taskname": "Iron Cloths"
+        }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Done",
+        "tasks": [{
+            "taskname": "Buy Running Shoes"
+        }
+        ]
+    }
+]

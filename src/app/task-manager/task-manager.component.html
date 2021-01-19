@@ -1,0 +1,146 @@
+<div class="main">
+    <div class="panel">
+        <div class="panel-header">Sample Application</div>
+        <div class="panel-group">
+            <div class="panel-body col-sm-8">
+                <div class="row" >
+                    <div class="col-sm-6 col-xs-12 col-md-4" *ngFor="let list of listArray; let i = index;">
+                        <div class="task-bar drag-container">
+                            <h5>{{list.name}} <a href="#" data-toggle="modal" data-target="#deleteListModal" (click)="deleteList(list.name)"><span class="glyphicon glyphicon-trash pull-right" aria-hidden="true"></span></a>
+                            </h5>
+
+                            <div cdkDropList id="list_{{list.id}}" [cdkDropListData]="list.tasks" [cdkDropListConnectedTo]="connectedTo" class="item-list" (cdkDropListDropped)="drop($event)">
+                                <div class="task-block" *ngFor="let task of list.tasks; let i2 = index;" cdkDrag>{{task.taskname}} 
+                                    <a href="#" data-toggle="modal" data-target="#deleteTaskModal" (click)="deleteTask(i, task.taskname)"><span class="glyphicon glyphicon-trash pull-right" aria-hidden="true"></span></a>
+                                </div>
+                            </div>
+
+                            <a href="#" class="link" data-toggle="modal" data-target="#addTaskModal" (click)="onNewTask($event, i)">+  Add a card</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-sidebar col-sm-4">
+                <a href="#" class="link" data-toggle="modal" data-target="#addListModal" (click)="onNewList($event)">+ Add another list</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The add List -->
+<form #newListForm="ngForm" novalidate="novalidate" id="newListForm" (ngSubmit)="addNewList()">
+    <div class="modal" id="addListModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h4 class="modal-title">New List</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2">Name</label>
+                        <div class="col-sm-10">
+                          <input appUniqueListValidator type="text" id="txtListName" class="form-control" placeholder="List Name" name="name" required="required" [(ngModel)]="listName" #newListName="ngModel" [ngClass]="{ 'is-invalid': newListName.invalid && (newListName.dirty || newListName.touched || newListForm.submitted), 'is-valid': newListName.valid && (newListName.dirty || newListName.touched || newListForm.submitted) }" />
+                          <span class="text-danger" *ngIf="newListName.invalid && (newListName.dirty || newListName.touched || newListForm.submitted) && newListName.errors?.required">Name can't be blank.</span>
+                          <span class="text-danger" *ngIf="newListName.invalid && (newListName.dirty || newListName.touched || newListForm.submitted) && newListName.errors?.alreadyListPresent">    
+                            List Name already present, please try another one. </span> 
+                        </div>
+                      </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                <button type="button" name="newCancelBtn  " class="btn btn-danger" data-dismiss="modal" id="newListCancel">Close</button>
+                <input type="submit" name="newSaveBtn" class="btn btn-success" value="Add List">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- The delete List -->
+<div class="modal" id="deleteListModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Delete List</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="text-warning">Are you sure want to delete?</div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal" (click)="deleteListConfirm()">Delete</button>
+        </div>
+        </div>
+    </div>
+</div>
+    
+
+<!-- The add Task -->
+<form #newTaskForm="ngForm" novalidate="novalidate" id="newTaskForm" (ngSubmit)="addNewTask()">
+    <div class="modal" id="addTaskModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h4 class="modal-title">New Task</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2">Name</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="txtTaskName" class="form-control" placeholder="Task Name" name="name" required="required" appUniqueTaskValidator [(ngModel)]="taskName" #newTaskName="ngModel" [ngClass]="{ 'is-invalid': newTaskName.invalid && (newTaskName.dirty || newTaskName.touched || newTaskForm.submitted), 'is-valid': newTaskName.valid && (newTaskName.dirty || newTaskName.touched || newTaskForm.submitted) }"/>
+
+                          <span class="text-danger" *ngIf="newTaskName.invalid && (newTaskName.dirty || newTaskName.touched || newTaskForm.submitted) && newTaskName.errors?.required">Name can't be blank.</span>
+                          <span class="text-danger" *ngIf="newTaskName.invalid && (newTaskName.dirty || newTaskName.touched || newTaskForm.submitted) && newTaskName.errors?.alreadyTaskPresent">    
+                            Task Name already present, please try another one. </span> 
+                        </div>
+                      </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                <button type="button" name="newCancelBtn  " class="btn btn-danger" data-dismiss="modal" id="newTaskCancel">Close</button>
+                <input type="submit" name="newSaveBtn" class="btn btn-success" value="Add Task">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- The delete Task -->
+<div class="modal" id="deleteTaskModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Delete Task</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="text-warning">Are you sure want to delete this Task?</div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"  id="newTaskCancel">Close</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal" (click)="deleteTaskConfirm()">Delete</button>
+        </div>
+        </div>
+    </div>
+</div>
